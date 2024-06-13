@@ -54,9 +54,12 @@ def showDirectedGraph(words, number, path=None):
 
 
 def queryBridgeWords(str1, str2, list, graph):
+    bridge_list = []
+    if str1 not in list or str2 not in list:
+        return bridge_list
+
     str1number = list.index(str1)
     str2number = list.index(str2)
-    bridge_list = []
     for i in range(len(list)):
         if graph[str1number][i] != 0 and graph[i][str2number] != 0:
             # print("The bridge word from", str1, "to", str2, "is:", list[i])
@@ -194,98 +197,98 @@ def menu():
     print("5. 随机游走")
 
 
-# 文本预处理
-processed_words = process_text_file("a.txt")
-print(processed_words)
-if not processed_words:
-    print("There are no words.")
-    exit(0)
-
-# 生成单词表
-wordlist = []
-for i in processed_words:
-    if i not in wordlist:
-        wordlist.append(i)
-
-# 将文本用数字数组表示
-wordnumber = []
-for i in processed_words:
-    for j in range(len(wordlist)):
-        if wordlist[j] == i:
-            wordnumber.append(j)
-
-# 生成有向图矩阵
-digraph = np.zeros((len(wordlist), len(wordlist)))
-print(digraph.shape)
-for i in range(len(wordnumber) - 1):
-    temp1 = wordnumber[i]
-    temp2 = wordnumber[i + 1]
-    digraph[temp1][temp2] = digraph[temp1][temp2] + 1
-
-# 命令行操作
-menu()
-lang = input("选择操作：")  # 里边填序号以及对应操作
-if lang == "1":
-    # print(digraph)
-    showDirectedGraph(processed_words, wordnumber)
-
-elif lang == "2":
-    Stringword1 = input("写入单词1：")
-    Stringword2 = input("写入单词2：")
-    # 检测是否存在此单词
-    if Stringword1 not in wordlist:
-        if Stringword2 not in wordlist:
-            print("No", Stringword1, "and", Stringword2, "in the graph!")
-        else:
-            print("No", Stringword1, "in the graph!")
-    elif Stringword2 not in wordlist:
-        print("No", Stringword2, "in the graph!")
-    else:
-        result = queryBridgeWords(Stringword1, Stringword2, wordlist, digraph)
-        if not result:
-            print("No bridge words from", Stringword1, "to", Stringword2)
-        elif len(result) == 1:
-            print("The bridge word from", Stringword1, "to", Stringword2, "is:", wordlist[result[0]])
-        else:
-            print("The bridge words from", Stringword1, "to", Stringword2, "are:")
-            for i in range(len(result) - 1):
-                print(str(wordlist[result[i]]) + ',')
-            print(str(wordlist[result[-1]]))
-
-elif lang == "3":
-    text = input("输入新文本：")
-    # 文本处理
-    text = text.lower()
-    text = text.split()
-    newtext = generateNewText(text, wordlist, digraph)
-    newtext_string = ' '.join(newtext)
-    print(newtext_string)
-
-elif lang == "4":
-    Stringword1 = input("写入单词1：")
-    Stringword2 = input("写入单词2：")
-    # 检测是否存在此单词
-    if Stringword1 not in wordlist:
-        if Stringword2 not in wordlist:
-            print("No", Stringword1, "and", Stringword2, "in the graph!")
-        else:
-            print("No", Stringword1, "in the graph!")
-    elif Stringword2 not in wordlist:
-        print("No", Stringword2, "in the graph!")
-    else:
-        shortest_path, shortest_distance = calcShortestPath(Stringword1, Stringword2, wordlist, digraph)
-        if shortest_distance < float('inf'):
-            print(shortest_path)
-            print(shortest_distance)
-            showDirectedGraph(processed_words, wordnumber, shortest_path)
-        else:
-            print("Unreachable.")
-
-elif lang == "5":
-    walk_nodes, walk_edges = randomWalk(digraph, wordlist)
-    with open("walk_results.txt", "w") as f:
-        for node in walk_nodes:
-            f.write(str(node) + " ")
-
-else:
-    print("输入有误")
+# # 文本预处理
+# processed_words = process_text_file("a.txt")
+# print(processed_words)
+# if not processed_words:
+#     print("There are no words.")
+#     exit(0)
+#
+# # 生成单词表
+# wordlist = []
+# for i in processed_words:
+#     if i not in wordlist:
+#         wordlist.append(i)
+#
+# # 将文本用数字数组表示
+# wordnumber = []
+# for i in processed_words:
+#     for j in range(len(wordlist)):
+#         if wordlist[j] == i:
+#             wordnumber.append(j)
+#
+# # 生成有向图矩阵
+# digraph = np.zeros((len(wordlist), len(wordlist)))
+# print(digraph.shape)
+# for i in range(len(wordnumber) - 1):
+#     temp1 = wordnumber[i]
+#     temp2 = wordnumber[i + 1]
+#     digraph[temp1][temp2] = digraph[temp1][temp2] + 1
+#
+# # 命令行操作
+# menu()
+# lang = input("选择操作：")  # 里边填序号以及对应操作
+# if lang == "1":
+#     # print(digraph)
+#     showDirectedGraph(processed_words, wordnumber)
+#
+# elif lang == "2":
+#     Stringword1 = input("写入单词1：")
+#     Stringword2 = input("写入单词2：")
+#     # 检测是否存在此单词
+#     if Stringword1 not in wordlist:
+#         if Stringword2 not in wordlist:
+#             print("No", Stringword1, "and", Stringword2, "in the graph!")
+#         else:
+#             print("No", Stringword1, "in the graph!")
+#     elif Stringword2 not in wordlist:
+#         print("No", Stringword2, "in the graph!")
+#     else:
+#         result = queryBridgeWords(Stringword1, Stringword2, wordlist, digraph)
+#         if not result:
+#             print("No bridge words from", Stringword1, "to", Stringword2)
+#         elif len(result) == 1:
+#             print("The bridge word from", Stringword1, "to", Stringword2, "is:", wordlist[result[0]])
+#         else:
+#             print("The bridge words from", Stringword1, "to", Stringword2, "are:")
+#             for i in range(len(result) - 1):
+#                 print(str(wordlist[result[i]]) + ',')
+#             print(str(wordlist[result[-1]]))
+#
+# elif lang == "3":
+#     text = input("输入新文本：")
+#     # 文本处理
+#     text = text.lower()
+#     text = text.split()
+#     newtext = generateNewText(text, wordlist, digraph)
+#     newtext_string = ' '.join(newtext)
+#     print(newtext_string)
+#
+# elif lang == "4":
+#     Stringword1 = input("写入单词1：")
+#     Stringword2 = input("写入单词2：")
+#     # 检测是否存在此单词
+#     if Stringword1 not in wordlist:
+#         if Stringword2 not in wordlist:
+#             print("No", Stringword1, "and", Stringword2, "in the graph!")
+#         else:
+#             print("No", Stringword1, "in the graph!")
+#     elif Stringword2 not in wordlist:
+#         print("No", Stringword2, "in the graph!")
+#     else:
+#         shortest_path, shortest_distance = calcShortestPath(Stringword1, Stringword2, wordlist, digraph)
+#         if shortest_distance < float('inf'):
+#             print(shortest_path)
+#             print(shortest_distance)
+#             showDirectedGraph(processed_words, wordnumber, shortest_path)
+#         else:
+#             print("Unreachable.")
+#
+# elif lang == "5":
+#     walk_nodes, walk_edges = randomWalk(digraph, wordlist)
+#     with open("walk_results.txt", "w") as f:
+#         for node in walk_nodes:
+#             f.write(str(node) + " ")
+#
+# else:
+#     print("输入有误")
