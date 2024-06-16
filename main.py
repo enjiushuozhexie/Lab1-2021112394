@@ -189,6 +189,45 @@ def randomWalk(graph, wordlist):
     return walk_nodes, walk_edges
 
 
+def randomWalk1(graph, wordlist, start):
+    # 初始化已访问的节点和边
+    visited_nodes = set()
+    visited_edges = set()
+
+    # 初始化遍历结果
+    walk_nodes = []
+    walk_edges = []
+
+    if start not in wordlist:
+        return walk_nodes
+
+    start_node = start
+    current_node = start_node
+    visited_nodes.add(start_node)
+    walk_nodes.append(start_node)
+
+    while True:
+        # 获取当前节点的所有出边
+        outgoing_edges = get_outgoing_edges(current_node, wordlist, graph, visited_edges)
+        if not outgoing_edges:
+            break  # 如果没有出边，则退出循环
+
+        # 随机选择一个出边
+        chosen_edge = random.choice(outgoing_edges)
+
+        # 添加到已访问的节点和边
+        neighbor = chosen_edge
+        walk_nodes.append(neighbor)
+        walk_edges.append((current_node, neighbor))
+        visited_nodes.add(neighbor)
+        visited_edges.add((current_node, neighbor))
+
+        # 更新当前节点为邻居节点
+        current_node = neighbor
+
+    return walk_nodes
+
+
 def menu():
     print("1. 读取文件并生成有向图")
     print("2. 查询桥接词")
@@ -289,6 +328,11 @@ def menu():
 #     with open("walk_results.txt", "w") as f:
 #         for node in walk_nodes:
 #             f.write(str(node) + " ")
+#
+# elif lang == "6":
+#     start = input("333:")
+#     walk_nodes = randomWalk1(digraph, wordlist, start)
+#     print(walk_nodes)
 #
 # else:
 #     print("输入有误")
